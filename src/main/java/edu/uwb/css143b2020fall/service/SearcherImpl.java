@@ -78,46 +78,52 @@ public class SearcherImpl implements Searcher {
     }
 
     //if they are the same word
-    private void sameWordHelper(List<List<Integer>> docuOne, List<List<Integer>> docuTwo, List<Integer> sharedLocation) {
-        for(int i = 0; i < docuTwo.size(); i++){
-            if(docuOne == null) {
-                break;
-            }
+    private void sameWordHelper(List<List<Integer>> indexWord_1, List<List<Integer>> indexWord_2, List<Integer> common){
+        //for every document
+        for(int i = 0; i < indexWord_2.size(); i++){
 
-            if(docuOne.get(i).isEmpty() || docuOne.size() == 0) {
+            if(indexWord_1 == null || indexWord_2 == null)
+                break;
+
+            if(indexWord_1.get(i).isEmpty()){
+                if(common.contains(i)){
+                    common.remove(Integer.valueOf(i));
+                }
                 continue;
             }
+            List<Integer> indexes_1 = indexWord_1.get(i);
 
-            List<Integer> locationOne = docuOne.get(i);
-            List<Integer> locationTwo = docuTwo.get(i);
+            if(indexWord_2.get(i).isEmpty()){
+                if(common.contains(i)){
+                    common.remove(Integer.valueOf(i));
+                }
+                continue;
+            }
+            List<Integer> indexes_2 = indexWord_2.get(i);
 
-            for(int locOneLoop = 0; locOneLoop < locationOne.size(); locOneLoop++){
-                for(int locTwoLoop = locOneLoop + 1; locTwoLoop < locationTwo.size() - 1; locTwoLoop++){
-                    if(locationOne.get(locOneLoop) == locationTwo.get(locTwoLoop)){
-                        if(!sharedLocation.contains(i)) {
-                            sharedLocation.add(i);
+            for(int f = 0; f < indexes_1.size(); f++){
+                for(int j = 0; j < indexes_2.size(); j++){
+                    if(indexes_1.get(f) == indexes_2.get(j) - 1){
+                        if(!common.contains(i)) {
+                            common.add(i);
                         }
+                        break;
                     }
-
-                    else if(sharedLocation.size() > 0){
-                        if(sharedLocation.contains(i)){
-                            sharedLocation.remove(i);
+                    else if(!common.isEmpty()){
+                        if(common.contains(i)){
+                            common.remove(Integer.valueOf(i));
                         }
                     }
                 }
             }
         }
     }
-
     private void notSameWordHelper(List<List<Integer>> docuLocationOne, List<List<Integer>> docuLocationTwo, List<Integer> sharedLocation){
         for(int i = 0; i < docuLocationTwo.size(); i++) {
 
-            if (docuLocationOne == null){
-                if (docuLocationTwo == null) {
+            if (docuLocationOne == null ||docuLocationTwo == null) {
                     break;
                 }
-            break;
-        }
 
             if(docuLocationOne.get(i).size() == 0){
                 if(sharedLocation.contains(i)){
